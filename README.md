@@ -22,6 +22,9 @@
 <p>6. Следуя диаграмме переходов, перевести структурный автомат в конечное состояние, равное 0.
 <p>7. Перед последующими запусками движка следует установить структурный автомат в насальное состояние, равное 20 с помощью запуска скрипта:
 <p>localhost/folder/newActiveStates.py y либо либо localhost/folder/newActiveStates.php
+<p>3. SQLite-база fsmx1.db содержит ещё один пример структурного автомата. Диаграмма переходов имеет вид:
+
+![s](https://github.com/GrigoryevV/StructuralStateMachine/blob/main/fsmx1.png)
 
 
 
