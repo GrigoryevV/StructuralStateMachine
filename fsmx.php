@@ -1,7 +1,7 @@
 <html><h2>Active states:</h2></html> 
 <?php
 $self=$_SERVER['PHP_SELF']; 
-$db = new SQLite3('fsmx.db');
+$db = new SQLite3('fsmx1.db');
 
 //ѕоказываем ссылки дл€ перехода в активные состо€ни€ 
 $result = $db->query('select activeState, role from activeStates, roleStates where activeStates.activeState=roleStates.state');
