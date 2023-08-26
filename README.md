@@ -19,7 +19,7 @@
 
 <p>6. Следуя диаграмме переходов, перевести структурный автомат в конечное состояние, равное 0.
 <p>7. Перед последующими запусками движка следует установить структурный автомат в насальное состояние, равное 20 с помощью запуска скрипта:
-<p>localhost/folder/newActiveStates.py y либо либо localhost/folder/newActiveStates.php. 
+<p>localhost/folder/newActiveStates.py y либо либо localhost/folder/newActiveStates.php
 
 
 
