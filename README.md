@@ -10,7 +10,7 @@
 <p>В базу добавлены представления:
 <p>а)	Число входов у точки сборки: 
 <p>CREATE VIEW gatecnt(gate, cnt) as select nextstate gate, count(nextstate) cnt from fsmx  where nextState in (select f2.state from fsmx f2 where command = -1) group by nextState
-<p>Признак точки сборки: command равна -1.
+<p>Признак точки сборки: command = -1.
 <p>б)	Число повторяющихся активных состояний (используется для активации точки сборки)
 <p>CREATE VIEW currentgatecnt(state,cnt) as select activeState, count(activeState) c from activeStates group by activeState having c >1
 <p>4. Диаграмма переходов для примера структурного автомата в базе имеет вид:
