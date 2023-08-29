@@ -9,19 +9,19 @@
 <p>activeStates	– таблица	с колонкой activeState, содержащая перечень номеров активных состояний структурного автомата.
 <p>В базу добавлены представления:
 <p>а)	Число входов у точки сборки. Признак точки сборки: command равна -1. 
-<p>CREATE VIEW gatecnt(gate, cnt) as select nextstate gate, count(nextstate) cnt from fsmx  where nextState in (select f2.state from fsmx f2 where command = -1) group by nextState
+<p>_CREATE VIEW gatecnt(gate, cnt) as select nextstate gate, count(nextstate) cnt from fsmx  where nextState in (select f2.state from fsmx f2 where command = -1) group by nextState_
 <p>б)	Число повторяющихся активных состояний (используется для активации точки сборки)
-<p>CREATE VIEW currentgatecnt(state,cnt) as select activeState, count(activeState) c from activeStates group by activeState having c >1
+<p>_CREATE VIEW currentgatecnt(state,cnt) as select activeState, count(activeState) c from activeStates group by activeState having c >1_
 <p>4. Диаграмма переходов для примера структурного автомата в базе имеет вид:
 
 ![s](https://github.com/GrigoryevV/StructuralStateMachine/blob/main/fsmx.png)
 
 <p>5. Запустить движок. Для локального  http-сервера:
-<p>localhost/folder/fsmx.py либо либо localhost/folder/fsmx.php
+<p>_localhost/folder/fsmx.py либо либо localhost/folder/fsmx.php_
 
 <p>6. Следуя диаграмме переходов, перевести структурный автомат в конечное состояние, равное 0.
 <p>7. Перед последующими запусками движка следует установить структурный автомат в начальное состояние, равное 20 с помощью запуска скрипта:
-<p>localhost/folder/newActiveStates.py y либо либо localhost/folder/newActiveStates.php
+<p>_localhost/folder/newActiveStates.py y либо либо localhost/folder/newActiveStates.php_
 <p>8. SQLite-база fsmx1.db содержит ещё один пример структурного автомата. Диаграмма переходов имеет вид:
 
 ![s](https://github.com/GrigoryevV/StructuralStateMachine/blob/main/fsmx1.png)
