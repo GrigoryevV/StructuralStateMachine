@@ -1,20 +1,24 @@
-<html><h2>Active states:</h2></html> 
+<html>
+<img src=fsmx.png height="60%">
+<h2>Active states:</h2></html> 
 <?php
 $self=$_SERVER['PHP_SELF']; 
-$db = new SQLite3('fsmx1.db');
+$db = new SQLite3('fsmx.db');
 
 //Показываем ссылки для перехода в активные состояния 
 $result = $db->query('select activeState, role from activeStates, roleStates where activeStates.activeState=roleStates.state');
 while ($row = $result->fetchArray(SQLITE3_ASSOC)){
 	$r=$row['role']; $as=$row['activeState'];
-	echo '<p><a href='.$self.'?role='.$r.'&as='.$as.'>ActiveState='.$as.' Role='.$r.'</a>';}
-
+	echo '<p><a href='.$self.'?role='.$r.'&as='.$as.'>State='.$as.' for role='.$r.'</a>';}
+echo '<p>Select to go!</p>';
 //Показываем выбранное  активное состояние
 if(isset($_GET['role'])) {
 	$role=$_GET['role']; $as=$_GET['as'];
 	echo '<p>-----------------------------------------------------------------------------------';
-	echo '<p>Web page for activeState='.$as.', role='.$role.'.<p>';
-	echo '<p><h2>There will be many web elements for input and editing: data grids, charts, etc.</h2>';
+	echo '<p><h2>This is the web page for state='.$as.' and role='.$role.'.</h2></p>';
+	echo '<p><h3>There will be many web elements for input and editing: data grids, charts, etc.</h3>';
+	//echo '<br>';
+	echo '<p><h3>Commands for transition to other states:</h3>';
 	//Из состояния команда идёт в одно следующее состояние
 	$result = $db->query('select command, count(command) c from fsmx, roleStates where fsmx.state=roleStates.state and fsmx.state='.$as.' and role='.$role.' group by command having c=1');
 	//Перебираем команды исходящие из состояния
@@ -25,7 +29,7 @@ if(isset($_GET['role'])) {
 		echo '<p><a href='.$self.'?command='.$cmd.'&as='.$as.'>Command = '.$cmd.'. </a>';
 		$nextRole = $db->querySingle('select role from roleStates where state='.$nextState);
 		//Показываем, какое будет после выполнения команды следующее состояние и связанная с ним роль
-		echo ' Next State = '.$nextState.' for role = '.$nextRole.'.';}
+		echo ' next state = '.$nextState.' for role = '.$nextRole.',';}
 	//Из состояния команда идёт в несколько следующих состояний
 	$result = $db->query('select command, count(command) c from fsmx, roleStates where fsmx.state=roleStates.state and fsmx.state='.$as.' and role='.$role.' group by command having c>1 order by command');
 	//Перебираем команды исходящие из состояния
@@ -34,12 +38,11 @@ if(isset($_GET['role'])) {
                 //Формируем ссылку для прехода в другИЕ состояниЯ
 		echo '<p><a href='.$self.'?commandX='.$cmd.'&as='.$as.'>Command = '.$cmd.'. </a>';
 		//Показываем, какИЕ будУТ после выполнения команды следующИЕ состояниЯ и связаннЫЕ с нимИ ролИ
-		echo 'In parallel: ';
 		$result1 = $db->query('select nextState, role from fsmx, roleStates where fsmx.state=roleStates.state and fsmx.state='.$as.' and role='.$role.' and command='.$cmd);
 		while ($row1 = $result1->fetchArray(SQLITE3_ASSOC)){
 			$nextState = $row1['nextState'];
 			$nextRole = $db->querySingle('select role from roleStates where state='.$nextState);
-			echo ' Next State = '.$nextState.' for role = '.$nextRole.'.';}}}
+			echo ' next state = '.$nextState.' for role = '.$nextRole.',';}}}
 
 //Отрабатываем команду перехода в следующее состояние 
 if(isset($_GET['command'])) {
