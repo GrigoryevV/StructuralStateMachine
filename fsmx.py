@@ -1,6 +1,6 @@
 #! C:/Users/p/anaconda3/python
 print('Content-type: text/html; charset=utf-8\n\n')
-print('<img src=fsmx.png height="50%">')
+print('<img src=fsmx1.png height="50%">')
 print('<p><h2>Active states:</h2>')
 import os
 import sqlite3
@@ -10,7 +10,7 @@ form = cgi.FieldStorage()
 #Я
 self=os.path.basename(__file__)
 refresh = '<html><head><meta http-equiv=refresh content=0;url=http://localhost/%s></head></html>' % self
-con = sqlite3.connect('fsmx.db')
+con = sqlite3.connect('fsmx1.db')
 con.row_factory = sqlite3.Row
 cur = con.cursor()
 #Показываем ссылки для перехода в активные состояния
@@ -38,15 +38,14 @@ if form.getfirst('role'):
 	for row in rows:
 		cmd=row['command']
 		#Формируем ссылку для перехода в другое состояние
-		cur.execute('select nextState from fsmx, roleStates where fsmx.state=roleStates.state and fsmx.state=%s and role=%s and command=%s' % (ast, role, cmd))
+		cur.execute('select nextState from fsmx LEFT JOIN roleStates ON fsmx.state=roleStates.state where fsmx.state=%s and role=%s and command=%s' % (ast, role, cmd))
 		nextState = cur.fetchone()['nextState']
 		print('<p><a href=%s?command=%s&ast=%s>Command = %s:</a>' % (self,cmd, ast, cmd))
-		sql = 'select role from roleStates where state=%s' % nextState
-		#print(sql)
-		cur.execute(sql)
+		cur.execute('select role from roleStates where state=%s' % nextState)
+		print (' next state = %s ' % nextState)
 		nextRole = cur.fetchone()['role']
 		#Показываем, какое будет после выполнения команды следующее состояние и связанная с ним роль
-		print (' next state = %s for role = %s.' % (nextState,nextRole ))
+		print ('for role = %s.' % nextRole)
 	#Из состояния команда идёт в несколько следующих состояний
 	cur.execute('select command, count(command) c from fsmx, roleStates where fsmx.state=roleStates.state and fsmx.state=%s and role=%s group by command having c>1 order by command' % (ast, role))
 	#Перебираем команды исходящие из состояния
@@ -56,13 +55,14 @@ if form.getfirst('role'):
 		#Формируем ссылку для прехода в другИЕ состояниЯ
 		print( '<p><a href=%s?commandX=%s&ast=%s>Command = %s:</a>' % (self, cmd, ast, cmd))
 		#Показываем, какИЕ будУТ после выполнения команды следующИЕ состояниЯ и связаннЫЕ с нимИ ролИ
-		cur.execute('select nextState, role from fsmx, roleStates where fsmx.state=roleStates.state and fsmx.state=%s and role=%s and command=%s' % (ast, role, cmd))
+		cur.execute('select nextState, role from fsmx LEFT JOIN roleStates ON fsmx.state=roleStates.state where fsmx.state=%s and role=%s and command=%s' % (ast, role, cmd))
 		rows1 = cur.fetchall()
 		for row1 in rows1:
 			nextState = row1['nextState']
+			print (' next state = %s ' % nextState)
 			cur.execute('select role from roleStates where state=%s' % nextState)
 			nextRole = cur.fetchone()['role']
-			print('next state = %s for role = %s,' % (nextState, nextRole))
+			print('for role = %s,' % nextRole)
 #Отрабатываем команду перехода в следующее состояние
 if form.getfirst('command'):
 	command=form.getfirst('command')

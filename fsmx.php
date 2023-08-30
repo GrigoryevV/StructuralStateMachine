@@ -1,9 +1,9 @@
 <html>
-<img src=fsmx.png height="60%">
+<img src=fsmx1.png height="60%">
 <h2>Active states:</h2></html> 
 <?php
 $self=$_SERVER['PHP_SELF']; 
-$db = new SQLite3('fsmx.db');
+$db = new SQLite3('fsmx1.db');
 
 //Показываем ссылки для перехода в активные состояния 
 $result = $db->query('select activeState, role from activeStates, roleStates where activeStates.activeState=roleStates.state');
@@ -25,7 +25,8 @@ if(isset($_GET['role'])) {
 	while ($row = $result->fetchArray(SQLITE3_ASSOC)){
 		$cmd=$row['command'];
 		//Формируем ссылку для перехода в другое состояние		
-		$nextState = $db->querySingle('select nextState from fsmx, roleStates where fsmx.state=roleStates.state and fsmx.state='.$as.' and role='.$role.' and command='.$cmd);
+		//$nextState = $db->querySingle('select nextState from fsmx, roleStates where fsmx.state=roleStates.state and fsmx.state='.$as.' and role='.$role.' and command='.$cmd);
+		$nextState = $db->querySingle('select nextState from fsmx LEFT JOIN roleStates ON fsmx.state=roleStates.state where fsmx.state='.$as.' and role='.$role.' and command='.$cmd);
 		echo '<p><a href='.$self.'?command='.$cmd.'&as='.$as.'>Command = '.$cmd.'. </a>';
 		$nextRole = $db->querySingle('select role from roleStates where state='.$nextState);
 		//Показываем, какое будет после выполнения команды следующее состояние и связанная с ним роль
@@ -38,7 +39,8 @@ if(isset($_GET['role'])) {
                 //Формируем ссылку для прехода в другИЕ состояниЯ
 		echo '<p><a href='.$self.'?commandX='.$cmd.'&as='.$as.'>Command = '.$cmd.'. </a>';
 		//Показываем, какИЕ будУТ после выполнения команды следующИЕ состояниЯ и связаннЫЕ с нимИ ролИ
-		$result1 = $db->query('select nextState, role from fsmx, roleStates where fsmx.state=roleStates.state and fsmx.state='.$as.' and role='.$role.' and command='.$cmd);
+		//$result1 = $db->query('select nextState, role from fsmx, roleStates where fsmx.state=roleStates.state and fsmx.state='.$as.' and role='.$role.' and command='.$cmd);
+		$result1 = $db->query('select nextState, role from fsmx LEFT JOIN roleStates ON fsmx.state=roleStates.state where fsmx.state='.$as.' and role='.$role.' and command='.$cmd);
 		while ($row1 = $result1->fetchArray(SQLITE3_ASSOC)){
 			$nextState = $row1['nextState'];
 			$nextRole = $db->querySingle('select role from roleStates where state='.$nextState);
