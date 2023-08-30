@@ -1,6 +1,6 @@
 #! C:/Users/p/anaconda3/python
 print('Content-type: text/html; charset=utf-8\n\n')
-print('<img src=fsmx1.png height="50%">')
+print('<img src=fsmx.png height="50%">')
 print('<p><h2>Active states:</h2>')
 import os
 import sqlite3
@@ -10,7 +10,7 @@ form = cgi.FieldStorage()
 #Я
 self=os.path.basename(__file__)
 refresh = '<html><head><meta http-equiv=refresh content=0;url=http://localhost/%s></head></html>' % self
-con = sqlite3.connect('fsmx1.db')
+con = sqlite3.connect('fsmx.db')
 con.row_factory = sqlite3.Row
 cur = con.cursor()
 #Показываем ссылки для перехода в активные состояния
