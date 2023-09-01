@@ -19,10 +19,10 @@
 
 <p>5. Запустить движок. Для локального  http-сервера:
 <p>localhost/folder/fsmx.py либо либо localhost/folder/fsmx.php
-<p>Веб-страницы для PHP и Python несколько отличаются. В PHP используются таблицы. Смотреть PHP в удобнее.
+<p>Веб-страницы для PHP и Python несколько отличаются. В PHP используются таблицы. Смотреть в PHP удобнее.
 <p>6. Следуя диаграмме переходов, перевести структурный автомат в конечное состояние, равное 0.
 <p>7. Перед последующими запусками движка следует установить структурный автомат в начальное состояние, равное 20 с помощью запуска скрипта:
-<p>_localhost/folder/newActiveStates.py y либо либо localhost/folder/newActiveStates.php_
+<p>localhost/folder/newActiveStates.py y либо либо localhost/folder/newActiveStates.php
 <p>8. SQLite-база fsmx1.db содержит ещё один пример структурного автомата. Диаграмма переходов имеет вид:
 
 ![s](https://github.com/GrigoryevV/StructuralStateMachine/blob/main/fsmx1.png)
