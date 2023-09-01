@@ -1,10 +1,7 @@
-<html>
-<img src=fsmx.png height="60%">
-<h2>Active states:</h2></html> 
+<html><table><tr><td width="50%"><img src=fsmx.png></td><td  valign="top"><h2>Active states:</h2>
 <?php
 $self=$_SERVER['PHP_SELF']; 
 $db = new SQLite3('fsmx.db');
-
 //ѕоказываем ссылки дл€ перехода в активные состо€ни€ 
 $result = $db->query('select activeState, role from activeStates, roleStates where activeStates.activeState=roleStates.state');
 while ($row = $result->fetchArray(SQLITE3_ASSOC)){
@@ -86,3 +83,4 @@ if(isset($_GET['commandX'])) {
 			while ($row1 = $result->fetchArray(SQLITE3_ASSOC))
 				$db->query('insert into activeStates(activeState) values ('.$row1['nextState'].')');}}
 	header('Location: http://localhost/'.$self);  }  ?>
+</td></tr></table></html>
