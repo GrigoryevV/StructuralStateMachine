@@ -1,16 +1,16 @@
 #! C:/Users/p/anaconda3/python
+fsmx = 'fsmx'
 print('Content-type: text/html; charset=utf-8\n\n')
-print('<img src=fsmx.png height="50%">')
+print('<img src=' + fsmx+ '.png height="50%">')
 print('<p><h2>Active states:</h2>')
 import os
 import sqlite3
 import cgi
 
 form = cgi.FieldStorage()
-#Я
 self=os.path.basename(__file__)
 refresh = '<html><head><meta http-equiv=refresh content=0;url=http://localhost/%s></head></html>' % self
-con = sqlite3.connect('fsmx.db')
+con = sqlite3.connect('%s.db' % fsmx)
 con.row_factory = sqlite3.Row
 cur = con.cursor()
 #Показываем ссылки для перехода в активные состояния
@@ -20,49 +20,55 @@ for row in rows:
     r=row['role']
     ast=row['activeState']
     print('<p><a href=%s?role=%d&ast=%d>State=%d for role=%d.</a>' % (self,r,ast,ast,r))
-
 print('<p>Select to go!</p>')
 #Показываем выбранное  активное состояние
 if form.getfirst('role'):
 	role = form.getfirst('role')
 	ast =form.getfirst('ast')
-	print('<p>-----------------------------------------------------------------------------------')
-	print('<p><h2>This is the web page for state=%s and role=%s.</h2></p>' % (ast, role))
-	print('<p><h3>Here will be many web elements for input and editing: data grids, charts, etc.</h3></p>')
-	print('<br>')
-	print('<p><h3>Commands for transition to other states:</h3>')
-	#Из состояния команда идёт в одно следующее состояние
-	cur.execute('select command, count(command) c from fsmx, roleStates where fsmx.state=roleStates.state and fsmx.state=%s and role=%s group by command having c=1' % (ast, role))
-	#Перебираем команды исходящие состояния
-	rows = cur.fetchall()
-	for row in rows:
-		cmd=row['command']
-		#Формируем ссылку для перехода в другое состояние
-		cur.execute('select nextState from fsmx LEFT JOIN roleStates ON fsmx.state=roleStates.state where fsmx.state=%s and role=%s and command=%s' % (ast, role, cmd))
-		nextState = cur.fetchone()['nextState']
-		print('<p><a href=%s?command=%s&ast=%s>Command = %s:</a>' % (self,cmd, ast, cmd))
-		cur.execute('select role from roleStates where state=%s' % nextState)
-		print (' next state = %s ' % nextState)
-		nextRole = cur.fetchone()['role']
-		#Показываем, какое будет после выполнения команды следующее состояние и связанная с ним роль
-		print ('for role = %s.' % nextRole)
-	#Из состояния команда идёт в несколько следующих состояний
-	cur.execute('select command, count(command) c from fsmx, roleStates where fsmx.state=roleStates.state and fsmx.state=%s and role=%s group by command having c>1 order by command' % (ast, role))
-	#Перебираем команды исходящие из состояния
-	rows = cur.fetchall()
-	for row in rows:
-		cmd=row['command']
-		#Формируем ссылку для прехода в другИЕ состояниЯ
-		print( '<p><a href=%s?commandX=%s&ast=%s>Command = %s:</a>' % (self, cmd, ast, cmd))
-		#Показываем, какИЕ будУТ после выполнения команды следующИЕ состояниЯ и связаннЫЕ с нимИ ролИ
-		cur.execute('select nextState, role from fsmx LEFT JOIN roleStates ON fsmx.state=roleStates.state where fsmx.state=%s and role=%s and command=%s' % (ast, role, cmd))
-		rows1 = cur.fetchall()
-		for row1 in rows1:
-			nextState = row1['nextState']
-			print (' next state = %s ' % nextState)
+    #Определяем активное состяние
+	cur.execute('select activeState  from activeStates a, roleStates r  where a.activeState=  r.state and   r.role=%s' % role)
+	asTrue = cur.fetchone()['activeState']
+	if int(asTrue)==int(ast):
+		print('<p><h2>This is the web page for state=%s and role=%s.</h2></p>' % (ast, role))
+		print('<p><h3>Here will be many web elements for input and editing: data grids, charts, etc.</h3></p>')
+		print('<br>')
+		print('<p><h3>Commands for transition to other states:</h3>')
+		#Из состояния команда идёт в одно следующее состояние
+		cur.execute('select command, count(command) c from fsmx, roleStates where fsmx.state=roleStates.state and fsmx.state=%s and role=%s group by command having c=1' % (ast, role))
+		#Перебираем команды исходящие состояния
+		rows = cur.fetchall()
+		for row in rows:
+			cmd=row['command']
+			#Формируем ссылку для перехода в другое состояние
+			cur.execute('select nextState from fsmx LEFT JOIN roleStates ON fsmx.state=roleStates.state where fsmx.state=%s and role=%s and command=%s' % (ast, role, cmd))
+			nextState = cur.fetchone()['nextState']
+			print('<p><a href=%s?command=%s&ast=%s>Command = %s:</a>' % (self,cmd, ast, cmd))
 			cur.execute('select role from roleStates where state=%s' % nextState)
+			print (' next state = %s ' % nextState)
 			nextRole = cur.fetchone()['role']
-			print('for role = %s,' % nextRole)
+			#Показываем, какое будет после выполнения команды следующее состояние и связанная с ним роль
+			print ('for role = %s.' % nextRole)
+		#Из состояния команда идёт в несколько следующих состояний
+		cur.execute('select command, count(command) c from fsmx, roleStates where fsmx.state=roleStates.state and fsmx.state=%s and role=%s group by command having c>1 order by command' % (ast, role))
+		#Перебираем команды исходящие из состояния
+		rows = cur.fetchall()
+		for row in rows:
+			cmd=row['command']
+			#Формируем ссылку для прехода в другИЕ состояниЯ
+			print( '<p><a href=%s?commandX=%s&ast=%s>Command = %s:</a>' % (self, cmd, ast, cmd))
+			#Показываем, какИЕ будУТ после выполнения команды следующИЕ состояниЯ и связаннЫЕ с нимИ ролИ
+			cur.execute('select nextState, role from fsmx LEFT JOIN roleStates ON fsmx.state=roleStates.state where fsmx.state=%s and role=%s and command=%s' % (ast, role, cmd))
+			rows1 = cur.fetchall()
+			for row1 in rows1:
+				nextState = row1['nextState']
+				print (' next state = %s ' % nextState)
+				cur.execute('select role from roleStates where state=%s' % nextState)
+				nextRole = cur.fetchone()['role']
+				print('for role = %s,' % nextRole)
+	else:#Состояние неактивно или привязано к другой роли
+		print('<p><h2>This is the web page for state=%s which is inactive or not assigned to role %s.</h2></p>' % (ast, role));
+		print('<p><h3>There will be many read only web elements : data grids, charts, etc.</h3>')
+		print('<p><h3>There are no commands for transition to other states.</h3>')
 #Отрабатываем команду перехода в следующее состояние
 if form.getfirst('command'):
 	command=form.getfirst('command')

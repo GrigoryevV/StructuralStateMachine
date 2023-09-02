@@ -1,12 +1,12 @@
 <html><table><tr width="100%"><td width="50%"><img src=fsmx.png></td><td  valign="top"><h2>Active states:</h2>
 <?php
-$self=$_SERVER['PHP_SELF']; 
+$self=$_SERVER['PHP_SELF'];
 $db = new SQLite3('fsmx.db');
-//Показываем ссылки для перехода в активные состояния 
+//Показываем ссылки для перехода в активные состояния
 $result = $db->query('select activeState, role from activeStates, roleStates where activeStates.activeState=roleStates.state');
 while ($row = $result->fetchArray(SQLITE3_ASSOC)){
-	$r=$row['role']; $as=$row['activeState'];
-	echo '<p><a href='.$self.'?role='.$r.'&as='.$as.'>State='.$as.' for role='.$r.'</a>';}
+    $r=$row['role']; $as=$row['activeState'];
+    echo '<p><a href='.$self.'?role='.$r.'&as='.$as.'>State='.$as.' for role='.$r.'</a>';}
 echo '<p>Select to go!</p>';
 //Показываем выбранное  активное состояние
 if(isset($_GET['role'])) {
@@ -33,7 +33,7 @@ if(isset($_GET['role'])) {
         //Перебираем команды исходящие из состояния
         while ($row = $result->fetchArray(SQLITE3_ASSOC)){
             $cmd=$row['command'];
-                    //Формируем ссылку для прехода в другИЕ состояниЯ
+            //Формируем ссылку для прехода в другИЕ состояниЯ
             echo '<p><a href='.$self.'?commandX='.$cmd.'&as='.$as.'>Command = '.$cmd.'. </a>';
             //Показываем, какИЕ будУТ после выполнения команды следующИЕ состояниЯ и связаннЫЕ с нимИ ролИ
             //$result1 = $db->query('select nextState, role from fsmx, roleStates where fsmx.state=roleStates.state and fsmx.state='.$as.' and role='.$role.' and command='.$cmd);
@@ -49,44 +49,44 @@ if(isset($_GET['role'])) {
         echo '<p><h3>There will be many read only web elements : data grids, charts, etc.</h3>';
         echo '<p><h3>There are no commands for transition to other states.</h3>'; }
 }
-//Отрабатываем команду перехода в следующее состояние 
+//Отрабатываем команду перехода в следующее состояние
 if(isset($_GET['command'])) {
-	$as=$_GET['as'];
-	//Удаляем состояние из активных состояний
-	$db->query('delete from activeStates where activeState='.$as);
-	//Добавляем следующее состояние в активные состояния
-	$nextState = $db->querySingle('select nextState from fsmx where state='.$as.' and command ='.$_GET['command']);
-	$db->query('insert into activeStates(activeState) values ('.$nextState.')');
-        //Проверяем, что следующее состояние - это точка сборки у которой все входы активны
-	$gate = $db->querySingle('select gate from gatecnt, currentgatecnt where gatecnt.cnt=currentgatecnt.cnt and gatecnt.gate='.$nextState);
-	if(isset($gate)) {
-		//Удаляем точку сборки из активных состояний
-		$db->query('delete from activeStates where activeState='.$gate);
-		//Активируем все состояния, выходящие из точки сборки
-		$result = $db->query('select nextState from fsmx where state='.$gate);
-		while ($row = $result->fetchArray(SQLITE3_ASSOC))
-			$db->query('insert into activeStates(activeState) values ('.$row['nextState'].')');}
-	header('Location: http://localhost/'.$self); }
+    $as=$_GET['as'];
+    //Удаляем состояние из активных состояний
+    $db->query('delete from activeStates where activeState='.$as);
+    //Добавляем следующее состояние в активные состояния
+    $nextState = $db->querySingle('select nextState from fsmx where state='.$as.' and command ='.$_GET['command']);
+    $db->query('insert into activeStates(activeState) values ('.$nextState.')');
+    //Проверяем, что следующее состояние - это точка сборки у которой все входы активны
+    $gate = $db->querySingle('select gate from gatecnt, currentgatecnt where gatecnt.cnt=currentgatecnt.cnt and gatecnt.gate='.$nextState);
+    if(isset($gate)) {
+        //Удаляем точку сборки из активных состояний
+        $db->query('delete from activeStates where activeState='.$gate);
+        //Активируем все состояния, выходящие из точки сборки
+        $result = $db->query('select nextState from fsmx where state='.$gate);
+        while ($row = $result->fetchArray(SQLITE3_ASSOC))
+            $db->query('insert into activeStates(activeState) values ('.$row['nextState'].')');}
+    header('Location: http://localhost/'.$self); }
 
-//Отрабатываем команду перехода в следующИЕ состояниЯ 
+//Отрабатываем команду перехода в следующИЕ состояниЯ
 if(isset($_GET['commandX'])) {
-	$cmd=$_GET['commandX'];
-	$as=$_GET['as'];
-	//Удаляем состояние из активных состояний
-	$db->query('delete from activeStates where activeState='.$as);
-	//Перебираем следующие состояния
-	$result = $db->query('select nextState from fsmx where state='.$as.' and command ='.$cmd);
-        while ($row = $result->fetchArray(SQLITE3_ASSOC)){
-		$nextState=$row['nextState'];
-		$db->query('insert into activeStates(activeState) values ('.$nextState.')');
-		//Проверяем, что следующее состояние - это точка сборки у которой все входы активны
-        	$gate = $db->querySingle('select gate from gatecnt, currentgatecnt where gatecnt.cnt=currentgatecnt.cnt and gatecnt.gate='.$nextState);
-		if(isset($gate)) {
-			//Удаляем точку сборки из активных состояний
-			$db->query('delete from activeStates where activeState='.$gate);
-			//Активируем все состояния, выходящие из точку сборки
-			$result1 = $db->query('select nextState from fsmx where state='.$gate);
-			while ($row1 = $result->fetchArray(SQLITE3_ASSOC))
-				$db->query('insert into activeStates(activeState) values ('.$row1['nextState'].')');}}
-	header('Location: http://localhost/'.$self);  }  ?>
+    $cmd=$_GET['commandX'];
+    $as=$_GET['as'];
+    //Удаляем состояние из активных состояний
+    $db->query('delete from activeStates where activeState='.$as);
+    //Перебираем следующие состояния
+    $result = $db->query('select nextState from fsmx where state='.$as.' and command ='.$cmd);
+    while ($row = $result->fetchArray(SQLITE3_ASSOC)){
+        $nextState=$row['nextState'];
+        $db->query('insert into activeStates(activeState) values ('.$nextState.')');
+        //Проверяем, что следующее состояние - это точка сборки у которой все входы активны
+        $gate = $db->querySingle('select gate from gatecnt, currentgatecnt where gatecnt.cnt=currentgatecnt.cnt and gatecnt.gate='.$nextState);
+        if(isset($gate)) {
+            //Удаляем точку сборки из активных состояний
+            $db->query('delete from activeStates where activeState='.$gate);
+            //Активируем все состояния, выходящие из точку сборки
+            $result1 = $db->query('select nextState from fsmx where state='.$gate);
+            while ($row1 = $result->fetchArray(SQLITE3_ASSOC))
+                $db->query('insert into activeStates(activeState) values ('.$row1['nextState'].')');}}
+    header('Location: http://localhost/'.$self);  }  ?>
 </td></tr></table></html>
