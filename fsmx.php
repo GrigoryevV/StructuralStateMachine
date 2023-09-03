@@ -1,4 +1,4 @@
-<html><table><tr width="100%"><td width="50%"><img src=fsmxSPP.png></td><td  valign="top">
+<html><table><tr width="100%"><td width="50%"><img src=fsmx.png></td><td  valign="top">
 <p><a href=newActiveStates.php>Reset to the beginning</a>
 <h2><p>Active states:</h2>
 <?php
