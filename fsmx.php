@@ -1,6 +1,10 @@
-<html><table><tr width="100%"><td width="50%"><img src=fsmx.png></td><td  valign="top"><h2>Active states:</h2>
+<html><table><tr width="100%"><td width="50%"><img src=fsmxSPP.png></td><td  valign="top">
+<p><a href=newActiveStates.php>Reset to the beginning</a>
+<h2><p>Active states:</h2>
 <?php
 $self=$_SERVER['PHP_SELF'];
+$addr=$_SERVER['SERVER_ADDR'];
+
 $db = new SQLite3('fsmx.db');
 //Показываем ссылки для перехода в активные состояния
 $result = $db->query('select activeState, role from activeStates, roleStates where activeStates.activeState=roleStates.state');
@@ -66,7 +70,8 @@ if(isset($_GET['command'])) {
         $result = $db->query('select nextState from fsmx where state='.$gate);
         while ($row = $result->fetchArray(SQLITE3_ASSOC))
             $db->query('insert into activeStates(activeState) values ('.$row['nextState'].')');}
-    header('Location: http://localhost/'.$self); }
+    header('Location: http://'.$addr.'/'.$self); }
+    //header('Location: '.'/'.$self); }
 
 //Отрабатываем команду перехода в следующИЕ состояниЯ
 if(isset($_GET['commandX'])) {
@@ -88,5 +93,5 @@ if(isset($_GET['commandX'])) {
             $result1 = $db->query('select nextState from fsmx where state='.$gate);
             while ($row1 = $result->fetchArray(SQLITE3_ASSOC))
                 $db->query('insert into activeStates(activeState) values ('.$row1['nextState'].')');}}
-    header('Location: http://localhost/'.$self);  }  ?>
+    header('Location: http://'.$addr.'/'.$self);   }  ?> 
 </td></tr></table></html>
