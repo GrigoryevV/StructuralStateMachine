@@ -1,5 +1,5 @@
-<html><table><tr><td><img  width="85%" src=fsmxSPP.png></td><td valign="top">
-<p><a href=newActiveStatesS.php>Reset to the beginning</a>
+<html><table><tr><td><img  width="85%" src=fsmx.png></td><td valign="top">
+<p><a href=newActiveStatesS.php>Reset to initial state!</a>
 
 <?php
 $self=$_SERVER['PHP_SELF'];
@@ -24,17 +24,18 @@ while ($row = $result->fetchArray(SQLITE3_ASSOC)){
     echo '<p>State='.$as.' for role='.$r;}      
 if (!empty($_SESSION['role'])) echo '<h2><p>Logged in role = '.$_SESSION['role'].'.</h2>';
 if (empty($_SESSION['role']))
-	echo '<p>Login as role: <form action='.$self.' method=get> <input type=text" name=role><input type=submit></form>';
+	echo '<p>Login as role from "Active states" list: <form action='.$self.' method=get> <input type=text" name=role><input type=submit Value=LogIn></form>';
 else	{
 	$role=$_SESSION['role'];
 	
     	$as = $db->querySingle('select activeState  from activeStates a, roleStates r  where a.activeState=  r.state and   r.role='.$role);
 	if (empty($as)){
-		echo '<p><h3>Role '.$role.' has no active states.';
+		echo '<p><h3>Role '.$role.' has no active states and cannot open any web page.';
         	echo '<p>Logout and login with a role that has active states: see list "Active states".</h3>'; 
 	} 
 
         else {
+		echo '<p><h2>-----------------------------------------------------------------------------</h2></p>';
 		echo '<p><h2>This is the web page for state='.$as.' and role='.$role.'.</h2></p>';
         	echo '<p><h3>There will be many web elements for input and editing: data grids, charts, etc.</h3>';
         	echo '<p><h3>Commands for transition to other states:</h3>';

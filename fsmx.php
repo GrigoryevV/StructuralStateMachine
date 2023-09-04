@@ -1,5 +1,5 @@
-<html><table><tr><td><img  width="85%" src=fsmxSPP.png></td><td valign="top">
-<p><a href=newActiveStates.php>Reset to the beginning</a>
+<html><table><tr><td><img  width="85%" src=fsmx.png></td><td valign="top">
+<p><a href=newActiveStates.php>Reset to initial state!</a>
 <h2><p>Active states:</h2>
 <?php
 $self=$_SERVER['PHP_SELF'];
@@ -17,6 +17,7 @@ if(isset($_GET['role'])) {
     //Определяем активное состяние
     $asTrue = $db->querySingle('select activeState  from activeStates a, roleStates r  where a.activeState=  r.state and   r.role='.$role);
     if ($asTrue==$as){
+        echo '<p><h2>----------------------------------------------------------</h2></p>';
         echo '<p><h2>This is the web page for state='.$as.' and role='.$role.'.</h2></p>';
         echo '<p><h3>There will be many web elements for input and editing: data grids, charts, etc.</h3>';
         echo '<p><h3>Commands for transition to other states:</h3>';
