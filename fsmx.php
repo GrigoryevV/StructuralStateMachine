@@ -1,10 +1,9 @@
-<html><table><tr width="100%"><td width="50%"><img src=fsmx.png></td><td  valign="top">
+<html><table><tr><td><img  width="85%" src=fsmxSPP.png></td><td valign="top">
 <p><a href=newActiveStates.php>Reset to the beginning</a>
 <h2><p>Active states:</h2>
 <?php
 $self=$_SERVER['PHP_SELF'];
 $addr=$_SERVER['SERVER_ADDR'];
-
 $db = new SQLite3('fsmx.db');
 //Показываем ссылки для перехода в активные состояния
 $result = $db->query('select activeState, role from activeStates, roleStates where activeStates.activeState=roleStates.state');
@@ -31,7 +30,8 @@ if(isset($_GET['role'])) {
             echo '<p><a href='.$self.'?command='.$cmd.'&as='.$as.'>Command = '.$cmd.'. </a>';
             $nextRole = $db->querySingle('select role from roleStates where state='.$nextState);
             //Показываем, какое будет после выполнения команды следующее состояние и связанная с ним роль
-            echo ' next state = '.$nextState.' for role = '.$nextRole.',';}
+            echo ' Next state = '.$nextState;
+	    if (!empty($nextRole))  echo ' for role = '.$nextRole.'.';}
         //Из состояния команда идёт в несколько следующих состояний
         $result = $db->query('select command, count(command) c from fsmx, roleStates where fsmx.state=roleStates.state and fsmx.state='.$as.' and role='.$role.' group by command having c>1 order by command');
         //Перебираем команды исходящие из состояния
@@ -40,12 +40,12 @@ if(isset($_GET['role'])) {
             //Формируем ссылку для прехода в другИЕ состояниЯ
             echo '<p><a href='.$self.'?commandX='.$cmd.'&as='.$as.'>Command = '.$cmd.'. </a>';
             //Показываем, какИЕ будУТ после выполнения команды следующИЕ состояниЯ и связаннЫЕ с нимИ ролИ
-            //$result1 = $db->query('select nextState, role from fsmx, roleStates where fsmx.state=roleStates.state and fsmx.state='.$as.' and role='.$role.' and command='.$cmd);
             $result1 = $db->query('select nextState, role from fsmx LEFT JOIN roleStates ON fsmx.state=roleStates.state where fsmx.state='.$as.' and role='.$role.' and command='.$cmd);
             while ($row1 = $result1->fetchArray(SQLITE3_ASSOC)){
                 $nextState = $row1['nextState'];
                 $nextRole = $db->querySingle('select role from roleStates where state='.$nextState);
-                echo ' next state = '.$nextState.' for role = '.$nextRole.',';}
+            	echo ' Next state = '.$nextState;
+		if (!empty($nextRole))  echo ' for role = '.$nextRole.'.';}
         }
     }
     else {//Состояние неактивно или привязано к другой роли
