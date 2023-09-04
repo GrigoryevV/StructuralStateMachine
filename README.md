@@ -20,7 +20,8 @@
 ![s](https://github.com/GrigoryevV/StructuralStateMachine/blob/main/fsmx.png)
 
 <p>5. Запустить движок. Для локального  http-сервера:
-<p>localhost/folder/fsmx.py либо либо localhost/folder/fsmx.php
+<p>HOST/folder/fsmx.py либо либо HOST/folder/fsmx.php
+<p> localhost не использовать.  
 <p>Веб-страницы для PHP и Python несколько отличаются. В PHP используются HTML-таблицы. 
 <p>6. Следуя диаграмме переходов, перевести структурный автомат в конечное состояние, равное 0.
 <p>7. Для Python перед последующими запусками движка следует установить структурный автомат в начальное состояние, равное 20 с помощью запуска скрипта:
