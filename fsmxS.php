@@ -24,7 +24,7 @@ while ($row = $result->fetchArray(SQLITE3_ASSOC)){
     echo '<p>State='.$as.' for role='.$r;}      
 if (!empty($_SESSION['role'])) echo '<h2><p>Logged in as role = '.$_SESSION['role'].'.</h2>';
 if (empty($_SESSION['role']))
-	echo '<p><br><br>Login as role from "Active states" list. <p>Enter an integer. <form action='.$self.' method=get> <input type=text" name=role><input type=submit Value=LogIn></form>';
+	echo '<p><br><br>Login as role from "Active states" list. <p>Enter an integer - role number. <form action='.$self.' method=get> <input type=text" name=role><input type=submit Value=LogIn></form>';
 else	{
 	$role=$_SESSION['role'];
 	
