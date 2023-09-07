@@ -1,4 +1,4 @@
-<html><table><tr><td><img  width="85%" src=fsmx.png></td><td valign="top">
+<html><table><tr><td><img  width="85%" src=fsmxSPP.png></td><td valign="top">
 <p><a href=newActiveStatesS.php>Reset to initial state!</a>
 
 <?php
@@ -6,7 +6,7 @@ $self=$_SERVER['PHP_SELF'];
 $addr=$_SERVER['SERVER_ADDR'];
 $db = new SQLite3('fsmx.db');
 session_start();
-echo '<p><a href='.$self.'?Logout=1>Logout.</a></p>';
+if (!empty($_SESSION['role'])) echo '<p><a href='.$self.'?Logout=1>Logout.</a></p>';
 if(isset($_GET['role'])) {
 	$role=$_GET['role'];
 	$_SESSION['role']=$role;
@@ -22,9 +22,9 @@ echo '<h2><p>Active states:</h2>';
 while ($row = $result->fetchArray(SQLITE3_ASSOC)){
     $r=$row['role']; $as=$row['activeState'];
     echo '<p>State='.$as.' for role='.$r;}      
-if (!empty($_SESSION['role'])) echo '<h2><p>Logged in role = '.$_SESSION['role'].'.</h2>';
+if (!empty($_SESSION['role'])) echo '<h2><p>Logged in as role = '.$_SESSION['role'].'.</h2>';
 if (empty($_SESSION['role']))
-	echo '<p>Login as role from "Active states" list: <form action='.$self.' method=get> <input type=text" name=role><input type=submit Value=LogIn></form>';
+	echo '<p><br><br>Login as role from "Active states" list. <p>Enter an integer. <form action='.$self.' method=get> <input type=text" name=role><input type=submit Value=LogIn></form>';
 else	{
 	$role=$_SESSION['role'];
 	
